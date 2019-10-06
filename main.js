@@ -8,27 +8,37 @@ const userMap = new Map()
 
 io.on('connection', function(socket) {
 
+  // new client connected
+  // register the client with a temporary username
   userMap.set(socket.id, `user#${userMap.size}`)
 
+  // welcome message to global channel
   socket.broadcast.emit('global', {
     username: 'server',
     message: 'New user joined to the server!' + userMap.get(socket.id)
   })
 
+  // listen for messages in global channel
   socket.on('global', function(msg) {
+
     console.log('message from: ' + msg.username);
     console.log('message: ' + msg.message + '\n');
+    
     socket.broadcast.emit('global', msg);
   });
 
+  // user disconnect from server
   socket.on('disconnect', function(reason) {
+    
     const user = userMap.get(socket.id)
     const msg = `User ${user} diconnect for reason ${reason}`
-    console.log(msg)
+    
+    // annunce user exit
     socket.broadcast.emit('global', {
       username: 'server',
       message: msg
     })
+
     userMap.delete(socket.id)
   })
 });
