@@ -1,4 +1,4 @@
-require('dotenv')({ path: `${__dirname}` })
+require('dotenv').config({ path: `${__dirname}/.env` })
 const http = require('http').createServer();
 const io = require('socket.io')(http);
 const { SERVER_ADDRESS, SERVER_PORT } = process.env
