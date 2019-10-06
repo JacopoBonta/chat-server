@@ -6,7 +6,7 @@ const { SERVER_ADDRESS, SERVER_PORT } = process.env
 io.on('connection', function(socket){
   console.log('user connected!', socket)
 
-  socket.on('global', function(msg){
+  socket.on('global', function(msg) {
     console.log('message: ' + msg);
     socket.emit(msg)
   });
