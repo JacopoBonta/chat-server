@@ -7,7 +7,7 @@ io.on('connection', function(socket){
 
   socket.on('global', function(msg) {
     console.log('message: ' + msg);
-    socket.emit(msg)
+    socket.emit('global', msg)
   });
 });
 
