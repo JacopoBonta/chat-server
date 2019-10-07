@@ -13,7 +13,7 @@ io.on('connection', function(socket) {
   userMap.set(socket.id, `user#${userMap.size}`)
 
   // welcome message to global channel
-  socket.broadcast.emit('global', {
+  io.emit('global', {
     username: 'server',
     message: 'New user joined to the server!' + userMap.get(socket.id)
   })
@@ -21,10 +21,13 @@ io.on('connection', function(socket) {
   // listen for messages in global channel
   socket.on('global', function(msg) {
 
-    console.log('message from: ' + msg.username);
-    console.log('message: ' + msg.message + '\n');
-    
-    socket.broadcast.emit('global', msg);
+    const username = userMap.get(socket.id)
+    const message = msg.message
+
+    console.log('message from: ' + username);
+    console.log('message: ' + message + '\n');
+
+    socket.broadcast.emit('global', { username, message });
   });
 
   // user disconnect from server
@@ -34,7 +37,7 @@ io.on('connection', function(socket) {
     const msg = `User ${user} diconnect for reason ${reason}`
     
     // annunce user exit
-    socket.broadcast.emit('global', {
+    io.emit('global', {
       username: 'server',
       message: msg
     })
