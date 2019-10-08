@@ -3,9 +3,8 @@ const http = require('http').createServer();
 const io = require('socket.io')(http);
 const { SERVER_ADDRESS, SERVER_PORT } = process.env;
 
-// userMap tiene traccia degli utenti che si connettono. La key è l'id del socket ed il value un nome casuale univoco
+// map of connected clients and theri username
 const userMap = new Map();
-
 // setUsername for a given socketId sets a username in userMap and returns the old username
 function setUsername(socketId, username) {
   const oldUsername = userMap.get(socketId);
@@ -54,6 +53,7 @@ io.on('connection', function(socket) {
 
         const oldusername = setUsername(socket.id, args[0]);
         let msg = `username changed from ${oldusername} to ${args[0]}`;
+        
         io.emit('global', {
           username: "server",
           message: msg
@@ -72,7 +72,7 @@ io.on('connection', function(socket) {
   socket.on('global', function(msg) {
 
     const username = userMap.get(socket.id);
-    const message = msg.message;
+    const message = msg.body;
 
     console.log('message from: ' + username);
     console.log('message: ' + message + '\n');
